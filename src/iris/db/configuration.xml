@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 	<properties resource="db.properties" /> -->
+	<settings>
+        <setting name="jdbcTypeForNull" value="NULL" />
+        <setting name="callSettersOnNulls" value="true" />
+    </settings>
+	<environments default="desenvolvimento">
+		<environment id="desenvolvimento">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/iris" />
+				<property name="username" value="root" />
+				<property name="password" value="admin" />
+			</dataSource>
+		</environment>
+	</environments>
+</configuration>
