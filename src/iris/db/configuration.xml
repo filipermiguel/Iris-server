@@ -3,11 +3,10 @@
 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-<!-- 	<properties resource="db.properties" /> -->
 	<settings>
-        <setting name="jdbcTypeForNull" value="NULL" />
-        <setting name="callSettersOnNulls" value="true" />
-    </settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<setting name="callSettersOnNulls" value="true" />
+	</settings>
 	<environments default="desenvolvimento">
 		<environment id="desenvolvimento">
 			<transactionManager type="JDBC" />
