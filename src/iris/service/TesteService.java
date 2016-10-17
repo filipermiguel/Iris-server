@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -18,9 +21,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.json.JSONException;
 
 import com.sun.javafx.iio.ImageStorage.ImageType;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -81,11 +87,12 @@ public class TesteService {
 		String encode = Base64.encode(imageData);
 		return Response.ok(encode).build();
 	}
-	
+
 	@GET
 	@Path("/{testeId}/imagemPergunta/{perguntaId}")
 	@Produces("image/jpg")
-	public Response getImagemPergunta(@PathParam("testeId") final int testeId, @PathParam("perguntaId") final int perguntaId) throws FileNotFoundException {
+	public Response getImagemPergunta(@PathParam("testeId") final int testeId,
+			@PathParam("perguntaId") final int perguntaId) throws FileNotFoundException {
 		String imagePath = testeDB.getImagemPerguntaByTest(testeId, perguntaId);
 		BufferedImage image;
 		ByteArrayOutputStream baos = null;
@@ -127,5 +134,17 @@ public class TesteService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public void salvarResultado(ResultadoTeste resultadoTeste) throws IOException {
 		testeDB.insertTestResult(resultadoTeste);
+	}
+
+	@GET
+	@Path("/{testeId}/resultados")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ResultadoTeste> resultados(@PathParam("testeId") final int testeId, //
+			@QueryParam("aproveitamentoMinimo") final float aproveitamentoMinimo, //
+			@QueryParam("aproveitamentoMaximo") final float aproveitamentoMaximo, //
+			@QueryParam("inicio") final String inicio, //
+			@QueryParam("fim") final String fim) throws JSONException, ParseException {
+		
+		return testeDB.getResults(testeId, aproveitamentoMinimo, aproveitamentoMaximo, inicio, fim);
 	}
 }

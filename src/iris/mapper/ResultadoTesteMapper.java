@@ -17,9 +17,6 @@ import iris.db.model.Teste;
 
 public interface ResultadoTesteMapper {
 
-	// @Select("SELECT * FROM resultadoteste")
-	// List<ResultadoTeste> selectAll();
-
 	@Select("SELECT * FROM resultadoteste WHERE teste = #{testeId} and rg = #{rg} and data = #{data}")
 	@Results(value = {
 			@Result(column = "teste", property = "testeId", javaType = Teste.class, one = @One(select = "iris.mapper.TesteMapper.select")),
@@ -28,9 +25,9 @@ public interface ResultadoTesteMapper {
 
 	@Select("SELECT DISTINCT teste.* FROM teste RIGHT JOIN resultadoteste ON teste.id = resultadoteste.teste WHERE resultadoteste.rg = #{rg}")
 	@Results({ @Result(property = "id", column = "id"),
-		@Result(property = "perguntas", column = "id", javaType = List.class, many = @Many(select = "iris.mapper.PerguntaMapper.selectByTeste")) })
+			@Result(property = "perguntas", column = "id", javaType = List.class, many = @Many(select = "iris.mapper.PerguntaMapper.selectByTeste")) })
 	List<Teste> selectStudentTestsDone(@Param("rg") long rg);
-	
+
 	@Select("SELECT * FROM resultadoteste where rg = #{rg} and teste = #{teste} ")
 	@Results(value = {
 			@Result(column = "teste", property = "teste", javaType = Teste.class, one = @One(select = "iris.mapper.TesteMapper.select")),
@@ -39,4 +36,10 @@ public interface ResultadoTesteMapper {
 
 	@Insert("INSERT INTO resultadoteste (teste, rg, data, qtdAcertos, resultado) VALUES (#{resultadoTeste.teste.id}, #{resultadoTeste.aluno.rg}, #{resultadoTeste.data}, #{resultadoTeste.qtdAcertos}, #{resultadoTeste.resultado})")
 	void insert(@Param("resultadoTeste") ResultadoTeste resultadoTeste);
+
+	@Select("SELECT * FROM resultadoteste where teste = #{testeId} and data between #{inicio} and #{fim}")
+	@Results(value = {
+			@Result(column = "teste", property = "teste", javaType = Teste.class, one = @One(select = "iris.mapper.TesteMapper.select")),
+			@Result(column = "rg", property = "aluno", javaType = Aluno.class, one = @One(select = "iris.mapper.AlunoMapper.select")) })
+	List<ResultadoTeste> selectResultsByTest(@Param("testeId") int testeId, @Param("inicio") String inicio, @Param("fim") String fim);
 }

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import iris.db.ConnectionDB;
 import iris.db.model.Alternativa;
@@ -40,7 +43,7 @@ public class TesteDB {
 			session.close();
 		}
 	}
-	
+
 	public List<Teste> getTestes() {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
@@ -50,7 +53,7 @@ public class TesteDB {
 			session.close();
 		}
 	}
-	
+
 	public List<Pergunta> getPerguntas(int id) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
@@ -78,7 +81,7 @@ public class TesteDB {
 					file.createNewFile();
 					ImageIO.write(bufferedImage, "jpg", file);
 					pergunta.setImagem(imagem);
-					
+
 					perguntaMapper.insert(pergunta, teste.getId());
 
 					// Insere as alternativas
@@ -155,7 +158,7 @@ public class TesteDB {
 			session.close();
 		}
 	}
-	
+
 	public String getImagemPerguntaByTest(int teste, int id) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
@@ -165,7 +168,7 @@ public class TesteDB {
 			session.close();
 		}
 	}
-	
+
 	public void insertTestResult(ResultadoTeste resultadoTeste) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
@@ -176,6 +179,28 @@ public class TesteDB {
 			session.close();
 		}
 	}
+
+	public List<ResultadoTeste> getResults(int testeId, float aproveitamentoMinimo, float aproveitamentoMaximo,
+			String dataInicial, String dataFinal) throws JSONException {
+		final SqlSession session = this.sqlMapper.openSession();
+		try {
+			ResultadoTesteMapper resultadoTesteMapper = session.getMapper(ResultadoTesteMapper.class);
+			List<ResultadoTeste> select = resultadoTesteMapper.selectResultsByTest(testeId, dataInicial, dataFinal);
+			List<ResultadoTeste> listaResultados = new ArrayList<>();
+			
+			for(ResultadoTeste resultadoTeste : select){
+				int size = resultadoTeste.getTeste().getPerguntas().size();
+				float aproveitamento = (resultadoTeste.getQtdAcertos() / (float) size) * 100;
+				
+				
+				if(aproveitamento >= aproveitamentoMinimo && aproveitamento <= aproveitamentoMaximo){
+					listaResultados.add(resultadoTeste);
+				}
+			}
+			
+			return listaResultados;
+		} finally {
+			session.close();
+		}
+	}
 }
-
-

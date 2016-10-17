@@ -1,6 +1,5 @@
 package iris.service;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -10,13 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import iris.db.dao.AlunoDB;
 import iris.db.model.Aluno;
 import iris.db.model.ResultadoTeste;
 import iris.db.model.Teste;
-import iris.utils.DateDeserializer;
 
 @Path("/aluno")
 public class AlunoService {
