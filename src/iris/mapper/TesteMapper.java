@@ -12,7 +12,6 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import iris.db.model.Pergunta;
 import iris.db.model.Teste;
 
 public interface TesteMapper {

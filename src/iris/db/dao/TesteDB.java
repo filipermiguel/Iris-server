@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -14,7 +13,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import iris.db.ConnectionDB;
 import iris.db.model.Alternativa;
@@ -74,13 +72,14 @@ public class TesteDB {
 			if (teste.getPerguntas() != null) {
 				PerguntaMapper perguntaMapper = session.getMapper(PerguntaMapper.class);
 				for (Pergunta pergunta : teste.getPerguntas()) {
-					byte[] imagedata = DatatypeConverter.parseBase64Binary(pergunta.getImagem());
-					BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
-					String imagem = "C:/Temp/imgTeste.jpg";
-					File file = new File(imagem);
-					file.createNewFile();
-					ImageIO.write(bufferedImage, "jpg", file);
-					pergunta.setImagem(imagem);
+					if (pergunta.getImagem() != null && !pergunta.getImagem().equals("")) {
+						byte[] imagedata = DatatypeConverter.parseBase64Binary(pergunta.getImagem());
+						BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
+						File tempDirectory = new File("C:/Temp");
+						File file = File.createTempFile("iris-", ".jpg", tempDirectory);
+						ImageIO.write(bufferedImage, "jpg", file);
+						pergunta.setImagem(file.getAbsolutePath());
+					}
 
 					perguntaMapper.insert(pergunta, teste.getId());
 
@@ -187,17 +186,16 @@ public class TesteDB {
 			ResultadoTesteMapper resultadoTesteMapper = session.getMapper(ResultadoTesteMapper.class);
 			List<ResultadoTeste> select = resultadoTesteMapper.selectResultsByTest(testeId, dataInicial, dataFinal);
 			List<ResultadoTeste> listaResultados = new ArrayList<>();
-			
-			for(ResultadoTeste resultadoTeste : select){
+
+			for (ResultadoTeste resultadoTeste : select) {
 				int size = resultadoTeste.getTeste().getPerguntas().size();
 				float aproveitamento = (resultadoTeste.getQtdAcertos() / (float) size) * 100;
-				
-				
-				if(aproveitamento >= aproveitamentoMinimo && aproveitamento <= aproveitamentoMaximo){
+
+				if (aproveitamento >= aproveitamentoMinimo && aproveitamento <= aproveitamentoMaximo) {
 					listaResultados.add(resultadoTeste);
 				}
 			}
-			
+
 			return listaResultados;
 		} finally {
 			session.close();
