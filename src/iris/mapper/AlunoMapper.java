@@ -11,10 +11,10 @@ import iris.db.model.Aluno;
 
 public interface AlunoMapper {
 
-	@Select("SELECT * FROM aluno")
+	@Select("SELECT * FROM aluno order by nome")
 	List<Aluno> selectAll();
 
-	@Select("SELECT * FROM aluno WHERE rg = #{rg}")
+	@Select("SELECT * FROM aluno WHERE rg = #{rg} order by nome")
 	Aluno select(long rg);
 
 	@Insert("INSERT INTO aluno (rg, nome, dataNascimento) VALUES (#{rg}, #{nome}, #{dataNascimento})")
@@ -24,6 +24,6 @@ public interface AlunoMapper {
 	@Update("UPDATE aluno SET nome=#{nome}, dataNascimento=#{dataNascimento} WHERE rg = #{rg}")
 	int update(Aluno aluno);
 
-	@Select("SELECT * FROM aluno WHERE nome = #{nome}")
+	@Select("SELECT * FROM aluno WHERE nome = #{nome} order by nome")
 	Aluno selectByNome(String nome);
 }
