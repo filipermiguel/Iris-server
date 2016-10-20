@@ -201,4 +201,14 @@ public class TesteDB {
 			session.close();
 		}
 	}
+	
+	public boolean hasResults(int testeId){
+		final SqlSession session = this.sqlMapper.openSession();
+		try {
+			ResultadoTesteMapper resultadoTesteMapper = session.getMapper(ResultadoTesteMapper.class);
+			return resultadoTesteMapper.existsByTest(testeId) == 1;
+		} finally {
+			session.close();
+		}
+	}
 }

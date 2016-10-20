@@ -22,6 +22,9 @@ public interface ResultadoTesteMapper {
 			@Result(column = "teste", property = "testeId", javaType = Teste.class, one = @One(select = "iris.mapper.TesteMapper.select")),
 			@Result(column = "rg", property = "rg", javaType = Aluno.class, one = @One(select = "iris.mapper.AlunoMapper.select")) })
 	ResultadoTeste select(int testeId, long rg, Date data);
+	
+	@Select("SELECT EXISTS(SELECT * FROM resultadoteste WHERE teste = #{testeId})")
+	int existsByTest(int testeId);
 
 	@Select("SELECT DISTINCT teste.* FROM teste RIGHT JOIN resultadoteste ON teste.id = resultadoteste.teste WHERE resultadoteste.rg = #{rg}")
 	@Results({ @Result(property = "id", column = "id"),
