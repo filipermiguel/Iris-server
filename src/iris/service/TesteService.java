@@ -64,25 +64,6 @@ public class TesteService {
 	}
 
 	@GET
-	@Path("/{id}/primeiraImagem")
-	@Produces("image/jpg")
-	public Response getPrimeiraImagem(@PathParam("id") final int id) throws FileNotFoundException {
-		String imagePath = testeDB.getPerguntas(id).get(0).getImagem();
-		BufferedImage image;
-		ByteArrayOutputStream baos = null;
-		try {
-			image = ImageIO.read(new File(imagePath));
-			baos = new ByteArrayOutputStream();
-			ImageIO.write(image, "jpg", baos);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		byte[] imageData = baos.toByteArray();
-		String encode = Base64.encode(imageData);
-		return Response.ok(encode).build();
-	}
-
-	@GET
 	@Path("/{testeId}/imagemPergunta/{perguntaId}")
 	@Produces("image/jpg")
 	public Response getImagemPergunta(@PathParam("testeId") final int testeId,
