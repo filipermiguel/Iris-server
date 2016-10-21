@@ -24,7 +24,10 @@ public interface ResultadoTesteMapper {
 	ResultadoTeste select(int testeId, long rg, Date data);
 	
 	@Select("SELECT EXISTS(SELECT * FROM resultadoteste WHERE teste = #{testeId})")
-	int existsByTest(int testeId);
+	int existsByTest(@Param("testeId") int testeId);
+	
+	@Select("SELECT EXISTS(SELECT * FROM resultadoteste WHERE teste = #{testeId} and rg = #{rg} and data = #{data})")
+	int existsResult(@Param("testeId") int testeId, @Param("rg") long rg, @Param("data") String data);
 
 	@Select("SELECT DISTINCT teste.* FROM teste RIGHT JOIN resultadoteste ON teste.id = resultadoteste.teste WHERE resultadoteste.rg = #{rg}")
 	@Results({ @Result(property = "id", column = "id"),

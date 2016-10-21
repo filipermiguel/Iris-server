@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -110,18 +109,11 @@ public class TesteService {
 		testeDB.insert(teste);
 	}
 
-	@PUT
-	@Path("/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void atualizarTeste(Teste teste) {
-		testeDB.update(teste);
-	}
-
 	@DELETE
 	@Path("/{testeId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public void removerTeste(@PathParam("testeId") final int testeId) {
-		if(testeDB.hasResults(testeId)){
+		if(testeDB.hasResultsByTest(testeId)){
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
 		testeDB.delete(testeId);
@@ -144,5 +136,14 @@ public class TesteService {
 			@QueryParam("fim") final String fim) throws JSONException, ParseException {
 		
 		return testeDB.getResults(testeId, aproveitamentoMinimo, aproveitamentoMaximo, inicio, fim);
+	}
+	
+	@GET
+	@Path("/{testeId}/resultado")
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean hasResultToday(@PathParam("testeId") final int testeId, //
+			@QueryParam("rg") final long rg, @QueryParam("data") final String data) throws JSONException, ParseException {
+		
+		return testeDB.hasResults(testeId, rg, data);
 	}
 }

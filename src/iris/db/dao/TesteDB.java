@@ -23,6 +23,7 @@ import iris.mapper.AlternativaMapper;
 import iris.mapper.PerguntaMapper;
 import iris.mapper.ResultadoTesteMapper;
 import iris.mapper.TesteMapper;
+import iris.utils.IrisUtils;
 
 public class TesteDB {
 
@@ -75,9 +76,10 @@ public class TesteDB {
 					if (pergunta.getImagem() != null && !pergunta.getImagem().equals("")) {
 						byte[] imagedata = DatatypeConverter.parseBase64Binary(pergunta.getImagem());
 						BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
+						BufferedImage scaledImage = IrisUtils.getScaledImage(bufferedImage, 400, 400);
 						File tempDirectory = new File("C:/Temp");
-						File file = File.createTempFile("iris-", ".jpg", tempDirectory);
-						ImageIO.write(bufferedImage, "jpg", file);
+						File file = File.createTempFile("iris-", ".png", tempDirectory);
+						ImageIO.write(scaledImage, "png", file);
 						pergunta.setImagem(file.getAbsolutePath());
 					}
 
@@ -98,60 +100,12 @@ public class TesteDB {
 			session.close();
 		}
 	}
-
-	public void update(Teste teste) {
-		final SqlSession session = this.sqlMapper.openSession();
-		try {
-			TesteMapper testeMapper = session.getMapper(TesteMapper.class);
-			testeMapper.update(teste);
-
-			// Insere as perguntas
-			if (teste.getPerguntas() != null) {
-				PerguntaMapper perguntaMapper = session.getMapper(PerguntaMapper.class);
-				for (Pergunta pergunta : teste.getPerguntas()) {
-					if (pergunta.getId() == 0) {
-						perguntaMapper.insert(pergunta, teste.getId());
-					} else {
-						perguntaMapper.update(pergunta);
-					}
-
-					// Insere as alternativas
-					if (pergunta.getAlternativas() != null) {
-						AlternativaMapper jogoMapper = session.getMapper(AlternativaMapper.class);
-						for (Alternativa alternativa : pergunta.getAlternativas()) {
-							if (alternativa.getId() == 0) {
-								jogoMapper.insert(alternativa, pergunta.getId());
-							} else {
-								jogoMapper.update(alternativa);
-							}
-						}
-					}
-				}
-			}
-
-			session.commit();
-		} finally {
-			session.close();
-		}
-	}
-
+	
 	public void delete(int id) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TesteMapper testeMapper = session.getMapper(TesteMapper.class);
 			testeMapper.delete(id);
-			session.commit();
-		} finally {
-			session.close();
-		}
-	}
-
-	public void salvarAlternativa(Alternativa alternativa) {
-		final SqlSession session = this.sqlMapper.openSession();
-		try {
-			AlternativaMapper alternativaMapper = session.getMapper(AlternativaMapper.class);
-			alternativaMapper.update(alternativa);
-
 			session.commit();
 		} finally {
 			session.close();
@@ -202,11 +156,21 @@ public class TesteDB {
 		}
 	}
 	
-	public boolean hasResults(int testeId){
+	public boolean hasResultsByTest(int testeId){
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			ResultadoTesteMapper resultadoTesteMapper = session.getMapper(ResultadoTesteMapper.class);
 			return resultadoTesteMapper.existsByTest(testeId) == 1;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public boolean hasResults(int testeId, long rg, String data){
+		final SqlSession session = this.sqlMapper.openSession();
+		try {
+			ResultadoTesteMapper resultadoTesteMapper = session.getMapper(ResultadoTesteMapper.class);
+			return resultadoTesteMapper.existsResult(testeId, rg, data) == 1;
 		} finally {
 			session.close();
 		}
