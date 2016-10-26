@@ -12,26 +12,26 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import iris.db.dao.UsuarioDB;
-import iris.db.model.Usuario;
+import iris.db.dao.UserDB;
+import iris.db.model.User;
 
 @Path("/user")
 public class UserService {
 
-	private static final UsuarioDB usuarioDB = new UsuarioDB();
+	private static final UserDB usuarioDB = new UserDB();
 	
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Usuario> getUsuarios() {
-		return usuarioDB.getUsuarios();
+	public List<User> getUsers() {
+		return usuarioDB.getUsers();
 	}
 	
 	@POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Usuario login(Usuario usuario) {
-		Usuario login = usuarioDB.login(usuario.getNome(), usuario.getSenha());
+    public User login(User user) {
+		User login = usuarioDB.login(user.getName(), user.getPassword());
 		if (login != null) {
 			return login;
 		}
@@ -42,39 +42,39 @@ public class UserService {
 	@POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
-    public Usuario criarUsuario(Usuario usuario) {
+    public User createUser(User user) {
 		try{
-			usuarioDB.insert(usuario);
+			usuarioDB.insert(user);
 		} catch (Exception e){
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-		return usuarioDB.get(usuario.getId());
+		return usuarioDB.getUser(user.getId());
 	}
 
 	@POST
-	@Path("/id/{id}/alterarSenha/{senha}")
+	@Path("/id/{id}/changePassword/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void alterarSenha(@PathParam("id") final int id, @PathParam("senha") final String senha) {
-		usuarioDB.alterarSenha(id, senha);
+	public void changePassword(@PathParam("id") final int id, @PathParam("password") final String password) {
+		usuarioDB.changePassword(id, password);
 	}
 	
 	@GET
-	@Path("/nome/{nome}")
+	@Path("/name/{nome}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Usuario getUsuario(@PathParam("nome") final String nome) {
-		Usuario usuario = usuarioDB.getUsuario(nome);
-		if (usuario == null) {
-			usuario = new Usuario();
-			usuario.setNome(nome);
-			usuarioDB.insert(usuario);
+	public User getUser(@PathParam("name") final String name) {
+		User user = usuarioDB.getUser(name);
+		if (user == null) {
+			user = new User();
+			user.setName(name);
+			usuarioDB.insert(user);
 		}
-		return usuario;
+		return user;
 	}
 	
 	@DELETE
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void removerUsuario(@PathParam("id") final int id) {
-		usuarioDB.deleteUsuario(id);
+	public void deleteUser(@PathParam("id") final int id) {
+		usuarioDB.deleteUser(id);
 	}
 }

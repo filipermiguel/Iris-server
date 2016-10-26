@@ -6,12 +6,12 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import iris.mapper.AlternativaMapper;
-import iris.mapper.AlunoMapper;
-import iris.mapper.PerguntaMapper;
-import iris.mapper.ResultadoTesteMapper;
-import iris.mapper.TesteMapper;
-import iris.mapper.UsuarioMapper;
+import iris.mapper.AlternativeMapper;
+import iris.mapper.StudentMapper;
+import iris.mapper.QuestionMapper;
+import iris.mapper.TestResultMapper;
+import iris.mapper.TestMapper;
+import iris.mapper.UserMapper;
 
 public class ConnectionDB {
 
@@ -24,12 +24,12 @@ public class ConnectionDB {
 			try {
 				reader = Resources.getResourceAsReader(configurationsFile);
 				sqlMapper = new SqlSessionFactoryBuilder().build(reader, "desenvolvimento");
-				sqlMapper.getConfiguration().addMapper(UsuarioMapper.class);
-				sqlMapper.getConfiguration().addMapper(TesteMapper.class);
-				sqlMapper.getConfiguration().addMapper(PerguntaMapper.class);
-				sqlMapper.getConfiguration().addMapper(AlternativaMapper.class);
-				sqlMapper.getConfiguration().addMapper(AlunoMapper.class);
-				sqlMapper.getConfiguration().addMapper(ResultadoTesteMapper.class);
+				sqlMapper.getConfiguration().addMapper(UserMapper.class);
+				sqlMapper.getConfiguration().addMapper(TestMapper.class);
+				sqlMapper.getConfiguration().addMapper(QuestionMapper.class);
+				sqlMapper.getConfiguration().addMapper(AlternativeMapper.class);
+				sqlMapper.getConfiguration().addMapper(StudentMapper.class);
+				sqlMapper.getConfiguration().addMapper(TestResultMapper.class);
 			} catch (final Throwable t) {
 				t.printStackTrace();
 			}
