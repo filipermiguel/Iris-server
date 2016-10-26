@@ -1,5 +1,7 @@
 package iris.db.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -13,6 +15,16 @@ public class UsuarioDB {
 
 	public UsuarioDB() {
 		this.sqlMapper = ConnectionDB.getSqlMapper();
+	}
+	
+	public List<Usuario> getUsuarios() {
+		final SqlSession session = this.sqlMapper.openSession();
+		try {
+			UsuarioMapper usuarioMapper = session.getMapper(UsuarioMapper.class);
+			return usuarioMapper.selectAll();
+		} finally {
+			session.close();
+		}
 	}
 	
 	public Usuario get(int id) {
@@ -47,11 +59,11 @@ public class UsuarioDB {
 		}
 	}
 
-	public void update(Usuario usuario) {
+	public void alterarSenha(int id, String senha) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			UsuarioMapper userMapper = session.getMapper(UsuarioMapper.class);
-			userMapper.update(usuario);
+			userMapper.update(id, senha);
 			session.commit();
 		} finally {
 			session.close();
@@ -63,6 +75,17 @@ public class UsuarioDB {
 		try {
 			UsuarioMapper userMapper = session.getMapper(UsuarioMapper.class);
 			return userMapper.selectByNome(nome);
+		} finally {
+			session.close();
+		}
+	}
+	
+	public void deleteUsuario(int id) {
+		final SqlSession session = this.sqlMapper.openSession();
+		try {
+			UsuarioMapper userMapper = session.getMapper(UsuarioMapper.class);
+			userMapper.delete(id);
+			session.commit();
 		} finally {
 			session.close();
 		}

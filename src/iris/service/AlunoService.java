@@ -33,20 +33,6 @@ public class AlunoService {
 		alunoDB.insert(aluno);
 	}
 
-	@POST
-	@Path("/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public void atualizarAluno(Aluno aluno) {
-		alunoDB.update(aluno);
-	}
-
-	@GET
-	@Path("/nome/{nome}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Aluno getAluno(@PathParam("nome") final String nome) {
-		return alunoDB.getAluno(nome);
-	}
-
 	@GET
 	@Path("/rg/{rg}")
 	@Produces(MediaType.APPLICATION_JSON)

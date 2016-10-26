@@ -63,7 +63,7 @@ public class TesteDB {
 		}
 	}
 
-	public void insert(Teste teste) throws IOException {
+	public Teste insert(Teste teste) throws IOException {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TesteMapper testeMapper = session.getMapper(TesteMapper.class);
@@ -96,6 +96,7 @@ public class TesteDB {
 			}
 
 			session.commit();
+			return teste;
 		} finally {
 			session.close();
 		}

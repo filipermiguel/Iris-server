@@ -26,7 +26,6 @@ import org.json.JSONException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import iris.db.dao.TesteDB;
-import iris.db.model.Pergunta;
 import iris.db.model.ResultadoTeste;
 import iris.db.model.Teste;
 
@@ -47,20 +46,6 @@ public class TesteService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Teste> getTestes() {
 		return testeDB.getTestes();
-	}
-
-	@GET
-	@Path("/{id}/perguntas")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Pergunta> getPerguntas(@PathParam("id") final int id) {
-		return testeDB.getPerguntas(id);
-	}
-
-	@GET
-	@Path("/{id}/primeiraPergunta")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Pergunta getPrimeiraPergunta(@PathParam("id") final int id) {
-		return testeDB.getPerguntas(id).get(0);
 	}
 
 	@GET
@@ -86,8 +71,8 @@ public class TesteService {
 	@POST
 	@Path("/create")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void criarTeste(Teste teste) throws IOException {
-		testeDB.insert(teste);
+	public Teste criarTeste(Teste teste) throws IOException {
+		return testeDB.insert(teste);
 	}
 
 	@DELETE

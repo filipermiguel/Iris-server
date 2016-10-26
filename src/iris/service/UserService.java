@@ -1,5 +1,8 @@
 package iris.service;
 
+import java.util.List;
+
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +20,13 @@ public class UserService {
 
 	private static final UsuarioDB usuarioDB = new UsuarioDB();
 	
+	@GET
+	@Path("/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Usuario> getUsuarios() {
+		return usuarioDB.getUsuarios();
+	}
+	
 	@POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,15 +43,19 @@ public class UserService {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     public Usuario criarUsuario(Usuario usuario) {
-		usuarioDB.insert(usuario);
+		try{
+			usuarioDB.insert(usuario);
+		} catch (Exception e){
+			throw new WebApplicationException(Status.BAD_REQUEST);
+		}
 		return usuarioDB.get(usuario.getId());
 	}
 
 	@POST
-	@Path("/update")
+	@Path("/id/{id}/alterarSenha/{senha}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void atualizarUsuario(Usuario usuario) {
-		usuarioDB.update(usuario);
+	public void alterarSenha(@PathParam("id") final int id, @PathParam("senha") final String senha) {
+		usuarioDB.alterarSenha(id, senha);
 	}
 	
 	@GET
@@ -55,5 +69,12 @@ public class UserService {
 			usuarioDB.insert(usuario);
 		}
 		return usuario;
+	}
+	
+	@DELETE
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void removerUsuario(@PathParam("id") final int id) {
+		usuarioDB.deleteUsuario(id);
 	}
 }

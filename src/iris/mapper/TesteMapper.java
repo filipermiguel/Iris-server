@@ -22,11 +22,13 @@ public interface TesteMapper {
 	Teste select(@Param("id") int id);
 
 	@Select("SELECT * FROM teste")
+	@Results({ @Result(property = "id", column = "id"),
+			@Result(property = "perguntas", column = "id", javaType = List.class, many = @Many(select = "iris.mapper.PerguntaMapper.selectByTeste")) })
 	List<Teste> selectAll();
 
 	@Insert("INSERT INTO teste (nome) VALUES (#{nome})")
 	@Options(useGeneratedKeys = true, keyProperty = "id")
-	void insert(Teste teste);
+	int insert(Teste teste);
 
 	@Update("UPDATE teste SET nome=#{nome} WHERE id = #{id}")
 	int update(Teste teste);
