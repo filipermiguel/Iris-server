@@ -15,7 +15,7 @@ import iris.db.model.Test;
 
 public interface TestMapper {
 
-	@Select("SELECT id, nome FROM test WHERE id = #{id}")
+	@Select("SELECT id, name FROM test WHERE id = #{id}")
 	@Results({ @Result(property = "id", column = "id"),
 			@Result(property = "questions", column = "id", javaType = List.class, many = @Many(select = "iris.mapper.QuestionMapper.selectByTest")) })
 	Test select(@Param("id") int id);

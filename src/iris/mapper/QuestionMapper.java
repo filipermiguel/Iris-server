@@ -19,7 +19,7 @@ public interface QuestionMapper {
 			@Result(property = "alternatives", column = "id", javaType = List.class, many = @Many(select = "iris.mapper.AlternativeMapper.selectByQuestion")) })
 	List<Question> selectByTest(@Param("id") int id);
 
-	@Insert("INSERT INTO question (test, name, correctAlternative, image) VALUES (#{testId}, #{question.nome}, #{question.correctAlternative}, #{question.image})")
+	@Insert("INSERT INTO question (test, name, correctAlternative, image) VALUES (#{testId}, #{question.name}, #{question.correctAlternative}, #{question.image})")
 	@Options(useGeneratedKeys = true, keyProperty = "question.id")
 	void insert(@Param("question") Question questin, @Param("testId") int testId);
 	

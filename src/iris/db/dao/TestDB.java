@@ -2,17 +2,21 @@ package iris.db.dao;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.JSONException;
+
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import iris.db.ConnectionDB;
 import iris.db.model.Alternative;
@@ -37,7 +41,24 @@ public class TestDB {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TestMapper testMapper = session.getMapper(TestMapper.class);
-			return testMapper.select(id);
+			Test test = testMapper.select(id);
+
+			for (Question question : test.getQuestions()) {
+//				if (question.getImage() != null) {
+//					BufferedImage image;
+//					ByteArrayOutputStream baos = null;
+//					try {
+//						image = ImageIO.read(new File(question.getImage()));
+//						baos = new ByteArrayOutputStream();
+//						ImageIO.write(image, "jpg", baos);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//					question.setImage(Base64.encode(baos.toByteArray()));
+//				}
+				question.setImage(null);
+			}
+			return test;
 		} finally {
 			session.close();
 		}
@@ -72,7 +93,7 @@ public class TestDB {
 			if (test.getQuestions() != null) {
 				QuestionMapper questionMapper = session.getMapper(QuestionMapper.class);
 				for (Question question : test.getQuestions()) {
-					
+
 					if (question.getImage() != null && !question.getImage().equals("")) {
 						byte[] imagedata = DatatypeConverter.parseBase64Binary(question.getImage());
 						BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
@@ -100,7 +121,7 @@ public class TestDB {
 			session.close();
 		}
 	}
-	
+
 	public void deleteTest(int id) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
@@ -133,8 +154,8 @@ public class TestDB {
 		}
 	}
 
-	public List<TestResult> getResults(int testId, float minimumEfficiency, float maximumEfficiency,
-			String initialDate, String endDate) throws JSONException {
+	public List<TestResult> getResults(int testId, float minimumEfficiency, float maximumEfficiency, String initialDate,
+			String endDate) throws JSONException {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TestResultMapper testResultMapper = session.getMapper(TestResultMapper.class);
@@ -155,8 +176,8 @@ public class TestDB {
 			session.close();
 		}
 	}
-	
-	public boolean hasResultsByTest(int testId){
+
+	public boolean hasResultsByTest(int testId) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TestResultMapper testResultMapper = session.getMapper(TestResultMapper.class);
@@ -165,8 +186,8 @@ public class TestDB {
 			session.close();
 		}
 	}
-	
-	public boolean hasResults(int testId, long rg, String date){
+
+	public boolean hasResults(int testId, long rg, String date) {
 		final SqlSession session = this.sqlMapper.openSession();
 		try {
 			TestResultMapper testResultMapper = session.getMapper(TestResultMapper.class);
