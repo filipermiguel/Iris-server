@@ -54,18 +54,21 @@ public class TestService {
 	public Response getQuestionImage(@PathParam("testId") final int testId,
 			@PathParam("questionId") final int questionId) throws FileNotFoundException {
 		String imagePath = testeDB.getQuestionImageByTest(testId, questionId);
-		BufferedImage image;
-		ByteArrayOutputStream baos = null;
-		try {
-			image = ImageIO.read(new File(imagePath));
-			baos = new ByteArrayOutputStream();
-			ImageIO.write(image, "jpg", baos);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(imagePath != null && !imagePath.equals("")){
+			BufferedImage image;
+			ByteArrayOutputStream baos = null;
+			try {
+				image = ImageIO.read(new File(imagePath));
+				baos = new ByteArrayOutputStream();
+				ImageIO.write(image, "jpg", baos);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			byte[] imageData = baos.toByteArray();
+			String encode = Base64.encode(imageData);
+			return Response.ok(encode).build();
 		}
-		byte[] imageData = baos.toByteArray();
-		String encode = Base64.encode(imageData);
-		return Response.ok(encode).build();
+		return Response.ok().build();
 	}
 
 	@POST
