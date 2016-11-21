@@ -60,7 +60,7 @@ public class TestDB {
 					question.setImage(null);
 				}
 			}
-			
+
 			return tests;
 
 		} finally {
@@ -91,10 +91,11 @@ public class TestDB {
 					if (question.getImage() != null && !question.getImage().equals("")) {
 						byte[] imagedata = DatatypeConverter.parseBase64Binary(question.getImage());
 						BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
-						BufferedImage scaledImage = IrisUtils.getScaledImage(bufferedImage, 400, 400);
+						// BufferedImage scaledImage =
+						// IrisUtils.getScaledImage(bufferedImage, 400, 400);
 						File tempDirectory = new File("C:/Temp");
-						File file = File.createTempFile("iris-", ".png", tempDirectory);
-						ImageIO.write(scaledImage, "png", file);
+						File file = File.createTempFile("iris-", ".jpg", tempDirectory);
+						ImageIO.write(bufferedImage, "jpg", file);
 						question.setImage(file.getAbsolutePath());
 					}
 
